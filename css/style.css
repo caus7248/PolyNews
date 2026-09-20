@@ -166,6 +166,12 @@ th {
   font-size: 0.8rem;
 }
 
+.feed-source-status {
+  margin: 0.3rem 0 0.45rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 @media (max-width: 900px) {
   .dashboard-grid,
   .feed-grid {

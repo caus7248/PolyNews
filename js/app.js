@@ -100,6 +100,8 @@ async function fetchFeed(url) {
 
 async function bootFeeds() {
   const status = document.getElementById("feed-status");
+  const economistStatus = document.getElementById("economist-status");
+  const foreignAffairsStatus = document.getElementById("foreign-affairs-status");
   const feedState = {
     economist: null,
     foreignAffairs: null
@@ -132,13 +134,20 @@ async function bootFeeds() {
   };
 
   const loadFeed = async (key, targetId, source) => {
+    const sourceStatus = key === "economist" ? economistStatus : foreignAffairsStatus;
     try {
       const items = await fetchFeed(source.url);
       renderFeed(targetId, items);
       feedState[key] = true;
+      if (sourceStatus) {
+        sourceStatus.textContent = `${source.title}: Live`;
+      }
     } catch {
       renderFeed(targetId, source.fallback);
       feedState[key] = false;
+      if (sourceStatus) {
+        sourceStatus.textContent = `${source.title}: Static fallback`;
+      }
     } finally {
       updateFeedStatus();
     }
@@ -155,8 +164,16 @@ updateClock();
 setInterval(updateClock, 1000);
 bootFeeds().catch(() => {
   const status = document.getElementById("feed-status");
+  const economistStatus = document.getElementById("economist-status");
+  const foreignAffairsStatus = document.getElementById("foreign-affairs-status");
   if (status) {
     status.textContent = "Media feed status: Static mode";
+  }
+  if (economistStatus) {
+    economistStatus.textContent = "The Economist: Static fallback";
+  }
+  if (foreignAffairsStatus) {
+    foreignAffairsStatus.textContent = "Foreign Affairs: Static fallback";
   }
   renderFeed("economist-feed", FEEDS.economist.fallback);
   renderFeed("foreign-affairs-feed", FEEDS.foreignAffairs.fallback);
