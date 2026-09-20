@@ -37,7 +37,11 @@ const signalScore = (item) => {
 };
 
 const formatMinutesAgo = (unixSeconds) => {
-  const diff = Math.max(1, Math.floor((Date.now() - unixSeconds * 1000) / 60000));
+  const timestamp = Number(unixSeconds);
+  if (!Number.isFinite(timestamp) || timestamp <= 0) {
+    return "unknown time";
+  }
+  const diff = Math.max(1, Math.floor((Date.now() - timestamp * 1000) / 60000));
   return `${diff}m ago`;
 };
 
