@@ -13,7 +13,7 @@ This repository now includes a minimal live dashboard prototype:
 
 ## Run locally
 
-From `/home/runner/work/PolyNews/PolyNews`:
+From the repository root:
 
 ```bash
 python3 -m http.server 8000

@@ -15,6 +15,14 @@ const setStatus = (text) => {
   statusEl.textContent = text;
 };
 
+const fetchJson = async (url) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Request failed (${response.status}) for ${url}`);
+  }
+  return response.json();
+};
+
 const signalScore = (item) => {
   const points = Number(item.score || 0);
   const comments = Number(item.descendants || 0);
@@ -35,29 +43,51 @@ const render = () => {
     .filter((story) => !query || story.title.toLowerCase().includes(query));
 
   if (!filtered.length) {
-    storiesEl.innerHTML = "<li>No stories match current filters.</li>";
+    storiesEl.textContent = "";
+    const emptyEl = document.createElement("li");
+    emptyEl.textContent = "No stories match current filters.";
+    storiesEl.appendChild(emptyEl);
     return;
   }
 
-  storiesEl.innerHTML = filtered
-    .map((story) => {
-      const url = story.url || `https://news.ycombinator.com/item?id=${story.id}`;
-      return `
-      <li class="story">
-        <h2><a href="${url}" target="_blank" rel="noopener noreferrer">${story.title}</a></h2>
-        <p class="meta"><span class="signal">Signal ${signalScore(story)}</span> · ${story.score || 0} points · ${story.descendants || 0} comments · ${formatMinutesAgo(story.time)}</p>
-      </li>`;
-    })
-    .join("");
+  storiesEl.textContent = "";
+  filtered.forEach((story) => {
+    const url = story.url || `https://news.ycombinator.com/item?id=${story.id}`;
+
+    const itemEl = document.createElement("li");
+    itemEl.className = "story";
+
+    const titleEl = document.createElement("h2");
+    const linkEl = document.createElement("a");
+    linkEl.href = url;
+    linkEl.target = "_blank";
+    linkEl.rel = "noopener noreferrer";
+    linkEl.textContent = story.title;
+    titleEl.appendChild(linkEl);
+
+    const metaEl = document.createElement("p");
+    metaEl.className = "meta";
+
+    const signalEl = document.createElement("span");
+    signalEl.className = "signal";
+    signalEl.textContent = `Signal ${signalScore(story)}`;
+
+    const metaTextEl = document.createTextNode(
+      ` · ${story.score || 0} points · ${story.descendants || 0} comments · ${formatMinutesAgo(story.time)}`
+    );
+    metaEl.append(signalEl, metaTextEl);
+    itemEl.append(titleEl, metaEl);
+    storiesEl.appendChild(itemEl);
+  });
 };
 
 const fetchStories = async () => {
   setStatus("Loading live stories…");
   try {
-    const ids = await fetch(`${API_BASE}/topstories.json`).then((r) => r.json());
+    const ids = await fetchJson(`${API_BASE}/topstories.json`);
     const topIds = ids.slice(0, MAX_ITEMS);
     const items = await Promise.all(
-      topIds.map((id) => fetch(`${API_BASE}/item/${id}.json`).then((r) => r.json()))
+      topIds.map((id) => fetchJson(`${API_BASE}/item/${id}.json`))
     );
 
     stories = items
