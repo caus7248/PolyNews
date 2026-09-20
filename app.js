@@ -45,7 +45,7 @@ const render = () => {
 
   const filtered = stories
     .filter((story) => signalScore(story) >= minSignal)
-    .filter((story) => !query || story.title.toLowerCase().includes(query));
+    .filter((story) => story.title && (!query || story.title.toLowerCase().includes(query)));
 
   if (!filtered.length) {
     storiesEl.textContent = "";
@@ -129,4 +129,5 @@ refreshEl.addEventListener("click", fetchStories);
 
 updateMinSignalA11y();
 fetchStories();
-setInterval(fetchStories, REFRESH_MS);
+const refreshTimer = setInterval(fetchStories, REFRESH_MS);
+window.addEventListener("beforeunload", () => clearInterval(refreshTimer));
