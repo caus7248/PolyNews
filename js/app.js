@@ -58,10 +58,13 @@ function renderFeed(targetId, items) {
     a.textContent = item.title || "Untitled";
 
     meta.className = "feed-meta";
-    const pubDate = item.pubDate ? new Date(item.pubDate) : null;
+    const rawPubDate = typeof item.pubDate === "string" ? item.pubDate.trim() : "";
+    const pubDate = rawPubDate ? new Date(rawPubDate) : null;
     meta.textContent =
       pubDate && !Number.isNaN(pubDate.getTime())
         ? pubDate.toLocaleString()
+        : rawPubDate
+          ? rawPubDate
         : "Date unavailable";
 
     li.append(a, meta);
@@ -118,4 +121,11 @@ async function bootFeeds() {
 
 updateClock();
 setInterval(updateClock, 1000);
-bootFeeds();
+bootFeeds().catch(() => {
+  const status = document.getElementById("feed-status");
+  if (status) {
+    status.textContent = "Static mode";
+  }
+  renderFeed("economist-feed", FEEDS.economist.fallback);
+  renderFeed("foreign-affairs-feed", FEEDS.foreignAffairs.fallback);
+});
