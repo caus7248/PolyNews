@@ -1,6 +1,7 @@
 const API_BASE = "https://hacker-news.firebaseio.com/v0";
 const MAX_ITEMS = 25;
 const REFRESH_MS = 60000;
+const DEBUG = false;
 
 const storiesEl = document.getElementById("stories");
 const statusEl = document.getElementById("status");
@@ -10,6 +11,7 @@ const minScoreValueEl = document.getElementById("min-score-value");
 const refreshEl = document.getElementById("refresh");
 
 let stories = [];
+let activeRequestId = 0;
 
 const setStatus = (text) => {
   statusEl.textContent = text;
@@ -87,6 +89,7 @@ const render = () => {
 };
 
 const fetchStories = async () => {
+  const requestId = ++activeRequestId;
   setStatus("Loading live stories…");
   try {
     const ids = await fetchJson(`${API_BASE}/topstories.json`);
@@ -98,6 +101,10 @@ const fetchStories = async () => {
       .filter((result) => result.status === "fulfilled")
       .map((result) => result.value);
 
+    if (requestId !== activeRequestId) {
+      return;
+    }
+
     stories = items
       .filter((item) => item && item.type === "story" && item.title)
       .sort((a, b) => signalScore(b) - signalScore(a));
@@ -106,6 +113,10 @@ const fetchStories = async () => {
     const stamp = new Date().toLocaleTimeString();
     setStatus(`Showing ${stories.length} stories · last refreshed ${stamp}`);
   } catch (error) {
+    if (requestId !== activeRequestId) {
+      return;
+    }
+
     if (stories.length) {
       setStatus("Unable to refresh live stories right now. Showing last successful results.");
     } else {
@@ -115,7 +126,9 @@ const fetchStories = async () => {
       storiesEl.appendChild(messageEl);
       setStatus("Unable to fetch live stories right now.");
     }
-    console.error(error);
+    if (DEBUG) {
+      console.error(error);
+    }
   }
 };
 
