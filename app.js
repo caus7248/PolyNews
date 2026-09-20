@@ -86,9 +86,12 @@ const fetchStories = async () => {
   try {
     const ids = await fetchJson(`${API_BASE}/topstories.json`);
     const topIds = ids.slice(0, MAX_ITEMS);
-    const items = await Promise.all(
+    const itemResults = await Promise.allSettled(
       topIds.map((id) => fetchJson(`${API_BASE}/item/${id}.json`))
     );
+    const items = itemResults
+      .filter((result) => result.status === "fulfilled")
+      .map((result) => result.value);
 
     stories = items
       .filter((item) => item && item.type === "story" && item.title)
@@ -98,7 +101,12 @@ const fetchStories = async () => {
     setStatus(`Showing ${stories.length} stories · last refreshed ${stamp}`);
     render();
   } catch (error) {
-    setStatus("Unable to fetch live stories right now.");
+    stories = [];
+    storiesEl.textContent = "";
+    const messageEl = document.createElement("li");
+    messageEl.textContent = "Unable to refresh stories right now.";
+    storiesEl.appendChild(messageEl);
+    setStatus("Unable to fetch live stories right now. Existing results were cleared.");
     console.error(error);
   }
 };
