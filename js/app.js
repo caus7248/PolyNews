@@ -39,7 +39,7 @@ function updateClock() {
   const el = document.getElementById("live-clock");
   if (!el) return;
   const now = new Date();
-  el.textContent = `${now.toLocaleTimeString("en-GB", { hour12: false })} UTC`;
+  el.textContent = `${now.toLocaleTimeString("en-GB", { hour12: false, timeZone: "UTC" })} UTC`;
 }
 
 function renderFeed(targetId, items) {
@@ -77,6 +77,9 @@ async function fetchFeed(url) {
   }
 
   const payload = await response.json();
+  if (payload?.status !== "ok") {
+    throw new Error(payload?.message || "Feed service error");
+  }
   if (!payload?.items?.length) {
     throw new Error("No feed items returned");
   }
@@ -86,24 +89,30 @@ async function fetchFeed(url) {
 
 async function bootFeeds() {
   const status = document.getElementById("feed-status");
-  let liveMode = true;
+  const [economistResult, foreignAffairsResult] = await Promise.allSettled([
+    fetchFeed(FEEDS.economist.url),
+    fetchFeed(FEEDS.foreignAffairs.url)
+  ]);
 
-  try {
-    const [economistItems, foreignAffairsItems] = await Promise.all([
-      fetchFeed(FEEDS.economist.url),
-      fetchFeed(FEEDS.foreignAffairs.url)
-    ]);
+  const economistLive = economistResult.status === "fulfilled";
+  const foreignAffairsLive = foreignAffairsResult.status === "fulfilled";
 
-    renderFeed("economist-feed", economistItems);
-    renderFeed("foreign-affairs-feed", foreignAffairsItems);
-  } catch {
-    liveMode = false;
-    renderFeed("economist-feed", FEEDS.economist.fallback);
-    renderFeed("foreign-affairs-feed", FEEDS.foreignAffairs.fallback);
-  }
+  renderFeed(
+    "economist-feed",
+    economistLive ? economistResult.value : FEEDS.economist.fallback
+  );
+  renderFeed(
+    "foreign-affairs-feed",
+    foreignAffairsLive ? foreignAffairsResult.value : FEEDS.foreignAffairs.fallback
+  );
 
   if (status) {
-    status.textContent = liveMode ? "Live" : "Static mode";
+    status.textContent =
+      economistLive && foreignAffairsLive
+        ? "Live"
+        : economistLive || foreignAffairsLive
+          ? "Partial live"
+          : "Static mode";
   }
 }
 
