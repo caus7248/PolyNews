@@ -100,31 +100,55 @@ async function fetchFeed(url) {
 
 async function bootFeeds() {
   const status = document.getElementById("feed-status");
-  const [economistResult, foreignAffairsResult] = await Promise.allSettled([
-    fetchFeed(FEEDS.economist.url),
-    fetchFeed(FEEDS.foreignAffairs.url)
+  const feedState = {
+    economist: null,
+    foreignAffairs: null
+  };
+
+  const updateFeedStatus = () => {
+    if (!status) return;
+    const states = Object.values(feedState);
+    const loading = states.includes(null);
+    const liveCount = states.filter((state) => state === true).length;
+
+    if (loading && liveCount === 0) {
+      status.textContent = "Media feed status: Loading";
+      return;
+    }
+
+    if (!loading && liveCount === 2) {
+      status.textContent = "Media feed status: Live";
+      return;
+    }
+
+    if (!loading && liveCount === 0) {
+      status.textContent = "Media feed status: Static mode";
+      return;
+    }
+
+    status.textContent = loading
+      ? "Media feed status: Partial live (updating)"
+      : "Media feed status: Partial live";
+  };
+
+  const loadFeed = async (key, targetId, source) => {
+    try {
+      const items = await fetchFeed(source.url);
+      renderFeed(targetId, items);
+      feedState[key] = true;
+    } catch {
+      renderFeed(targetId, source.fallback);
+      feedState[key] = false;
+    } finally {
+      updateFeedStatus();
+    }
+  };
+
+  updateFeedStatus();
+  await Promise.all([
+    loadFeed("economist", "economist-feed", FEEDS.economist),
+    loadFeed("foreignAffairs", "foreign-affairs-feed", FEEDS.foreignAffairs)
   ]);
-
-  const economistLive = economistResult.status === "fulfilled";
-  const foreignAffairsLive = foreignAffairsResult.status === "fulfilled";
-
-  renderFeed(
-    "economist-feed",
-    economistLive ? economistResult.value : FEEDS.economist.fallback
-  );
-  renderFeed(
-    "foreign-affairs-feed",
-    foreignAffairsLive ? foreignAffairsResult.value : FEEDS.foreignAffairs.fallback
-  );
-
-  if (status) {
-    status.textContent =
-      economistLive && foreignAffairsLive
-        ? "Live"
-        : economistLive || foreignAffairsLive
-          ? "Partial live"
-          : "Static mode";
-  }
 }
 
 updateClock();
@@ -132,7 +156,7 @@ setInterval(updateClock, 1000);
 bootFeeds().catch(() => {
   const status = document.getElementById("feed-status");
   if (status) {
-    status.textContent = "Static mode";
+    status.textContent = "Media feed status: Static mode";
   }
   renderFeed("economist-feed", FEEDS.economist.fallback);
   renderFeed("foreign-affairs-feed", FEEDS.foreignAffairs.fallback);
