@@ -15,6 +15,11 @@ const setStatus = (text) => {
   statusEl.textContent = text;
 };
 
+const updateMinSignalA11y = () => {
+  minScoreEl.setAttribute("aria-valuenow", minScoreEl.value);
+  minScoreEl.setAttribute("aria-valuetext", minScoreEl.value);
+};
+
 const fetchJson = async (url) => {
   const response = await fetch(url);
   if (!response.ok) {
@@ -101,12 +106,15 @@ const fetchStories = async () => {
     setStatus(`Showing ${stories.length} stories · last refreshed ${stamp}`);
     render();
   } catch (error) {
-    stories = [];
-    storiesEl.textContent = "";
-    const messageEl = document.createElement("li");
-    messageEl.textContent = "Unable to refresh stories right now.";
-    storiesEl.appendChild(messageEl);
-    setStatus("Unable to fetch live stories right now. Existing results were cleared.");
+    if (stories.length) {
+      setStatus("Unable to refresh live stories right now. Showing last successful results.");
+    } else {
+      storiesEl.textContent = "";
+      const messageEl = document.createElement("li");
+      messageEl.textContent = "Unable to load stories right now.";
+      storiesEl.appendChild(messageEl);
+      setStatus("Unable to fetch live stories right now.");
+    }
     console.error(error);
   }
 };
@@ -114,9 +122,11 @@ const fetchStories = async () => {
 searchEl.addEventListener("input", render);
 minScoreEl.addEventListener("input", () => {
   minScoreValueEl.textContent = minScoreEl.value;
+  updateMinSignalA11y();
   render();
 });
 refreshEl.addEventListener("click", fetchStories);
 
+updateMinSignalA11y();
 fetchStories();
 setInterval(fetchStories, REFRESH_MS);
