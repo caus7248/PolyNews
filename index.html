@@ -1,35 +1,115 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>PolyNews</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PolyNews — Signal vs. Noise Dashboard</title>
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <main class="app">
-      <header>
-        <h1>PolyNews Dashboard</h1>
-        <p>Signal-focused view of live headlines.</p>
-      </header>
+    <header class="site-header">
+      <div>
+        <h1>Signal vs. Noise World Dashboard</h1>
+        <p class="subtitle">Follow the news, backed by relevant information, and pull the signal out of the noise.</p>
+      </div>
+      <div class="clock-card">
+        <span class="badge badge-live">LIVE</span>
+        <p id="live-clock">--:--:-- UTC</p>
+      </div>
+    </header>
 
-      <section class="controls" aria-label="Dashboard controls">
-        <label>
-          Search
-          <input id="search" type="search" placeholder="Filter headlines" />
-        </label>
-        <label>
-          <span id="min-score-label">Min signal</span>
-          <input id="min-score" type="range" min="0" max="200" value="20" aria-label="Min signal" aria-labelledby="min-score-label" aria-valuenow="20" aria-valuetext="20" />
-          <output id="min-score-value" for="min-score" aria-live="polite">20</output>
-        </label>
-        <button id="refresh" type="button">Refresh now</button>
+    <main class="dashboard-grid">
+      <section class="card" id="economics-policy">
+        <div class="card-header">
+          <h2>Economics &amp; Policy</h2>
+          <span class="badge">Macro</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Lens</th>
+                <th>Signal</th>
+                <th>Noise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Inflation</td>
+                <td>Sticky core trends and wage pressure data</td>
+                <td>Single-cycle commodity spikes</td>
+              </tr>
+              <tr>
+                <td>Rates</td>
+                <td>Forward guidance divergence across central banks</td>
+                <td>One-off policymaker soundbites</td>
+              </tr>
+              <tr>
+                <td>Trade</td>
+                <td>Durable corridor and sanctions realignment</td>
+                <td>Headline tariff rumor loops</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <section class="status" id="status" aria-live="polite"></section>
-      <ul id="stories" class="stories" aria-label="News stories"></ul>
+      <section class="card" id="government-signal-noise">
+        <div class="card-header">
+          <h2>Government Signal vs. Noise</h2>
+          <span class="badge badge-contrast">Civics</span>
+        </div>
+        <ul class="signal-list">
+          <li><strong>Signal:</strong> Multi-year appropriations, procurement, and implementation timelines.</li>
+          <li><strong>Signal:</strong> Regulatory text changes with explicit compliance dates.</li>
+          <li><strong>Noise:</strong> Personality-driven social clips without policy instrument backing.</li>
+          <li><strong>Noise:</strong> Poll swings detached from turnout mechanics and district maps.</li>
+        </ul>
+      </section>
+
+      <section class="card" id="technology-science">
+        <div class="card-header">
+          <h2>Technology &amp; Science Forefront</h2>
+          <span class="badge">R&amp;D</span>
+        </div>
+        <ul class="signal-list">
+          <li>Breakthroughs that ship into reproducible products and peer-reviewed benchmarks.</li>
+          <li>Compute, energy, and materials bottlenecks that define real deployment velocity.</li>
+          <li>Cross-lab validation and open methods over conference hype cycles.</li>
+        </ul>
+      </section>
+
+      <section class="card" id="literature-hybrid">
+        <div class="card-header">
+          <h2>Literature &amp; Hybrid Diaspora Matrix</h2>
+          <span class="badge">Culture</span>
+        </div>
+        <p class="matrix-copy">
+          Track long-form narratives, translation pathways, and diaspora voices that bridge local memory with global circulation.
+          Prioritize durable themes and references that persist beyond short-lived media cycles.
+        </p>
+      </section>
+
+      <section class="card card-feed" id="media-bubble-breakers">
+        <div class="card-header">
+          <h2>Media Bubble Breakers Live Feed</h2>
+          <span id="feed-status" class="badge badge-live" aria-live="polite" role="status">Media feed status: Loading</span>
+        </div>
+        <div class="feed-grid">
+          <article>
+            <h3>The Economist</h3>
+            <p id="economist-status" class="feed-source-status" role="status" aria-live="polite">The Economist: Loading</p>
+            <ul id="economist-feed" class="feed-list"></ul>
+          </article>
+          <article>
+            <h3>Foreign Affairs</h3>
+            <p id="foreign-affairs-status" class="feed-source-status" role="status" aria-live="polite">Foreign Affairs: Loading</p>
+            <ul id="foreign-affairs-feed" class="feed-list"></ul>
+          </article>
+        </div>
+      </section>
     </main>
 
-    <script src="app.js" type="module"></script>
+    <script src="js/app.js" defer></script>
   </body>
 </html>
