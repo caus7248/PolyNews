@@ -1,0 +1,79 @@
+:root {
+  color-scheme: light dark;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #111827;
+  color: #f9fafb;
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.controls {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+}
+
+label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+input,
+button {
+  font: inherit;
+  padding: 0.45rem;
+  border-radius: 0.4rem;
+  border: 1px solid #374151;
+}
+
+button {
+  cursor: pointer;
+  background: #2563eb;
+  color: #fff;
+}
+
+.status {
+  min-height: 1.25rem;
+  margin: 0.8rem 0;
+  color: #bfdbfe;
+}
+
+.stories {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.story {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 0.6rem;
+  padding: 0.8rem;
+}
+
+.story h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.meta {
+  margin: 0;
+  opacity: 0.85;
+  font-size: 0.85rem;
+}
+
+.signal {
+  color: #93c5fd;
+  font-weight: 600;
+}
