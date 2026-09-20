@@ -49,13 +49,21 @@ function renderFeed(targetId, items) {
   list.innerHTML = "";
   items.slice(0, 5).forEach((item) => {
     const li = document.createElement("li");
-    const a = document.createElement("a");
+    const entry = document.createElement("span");
     const meta = document.createElement("span");
+    const hasValidLink = typeof item.link === "string" && /^https?:\/\//i.test(item.link);
 
-    a.href = item.link || "#";
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.textContent = item.title || "Untitled";
+    if (hasValidLink) {
+      const a = document.createElement("a");
+      a.href = item.link;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.textContent = item.title || "Untitled";
+      li.appendChild(a);
+    } else {
+      entry.textContent = item.title || "Untitled";
+      li.appendChild(entry);
+    }
 
     meta.className = "feed-meta";
     const rawPubDate = typeof item.pubDate === "string" ? item.pubDate.trim() : "";
@@ -67,7 +75,7 @@ function renderFeed(targetId, items) {
           ? rawPubDate
         : "Date unavailable";
 
-    li.append(a, meta);
+    li.appendChild(meta);
     list.appendChild(li);
   });
 }
