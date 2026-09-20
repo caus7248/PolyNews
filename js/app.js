@@ -70,7 +70,7 @@ function renderFeed(targetId, items) {
     const pubDate = rawPubDate ? new Date(rawPubDate) : null;
     meta.textContent =
       pubDate && !Number.isNaN(pubDate.getTime())
-        ? pubDate.toLocaleString()
+        ? `${pubDate.toLocaleString("en-GB", { timeZone: "UTC" })} UTC`
         : rawPubDate
           ? rawPubDate
         : "Date unavailable";
