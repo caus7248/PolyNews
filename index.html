@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PolyNews</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header>
+        <h1>PolyNews Dashboard</h1>
+        <p>Signal-focused view of live headlines.</p>
+      </header>
+
+      <section class="controls" aria-label="Dashboard controls">
+        <label>
+          Search
+          <input id="search" type="search" placeholder="Filter headlines" />
+        </label>
+        <label>
+          <span id="min-score-label">Min signal</span>
+          <input id="min-score" type="range" min="0" max="200" value="20" aria-label="Min signal" aria-labelledby="min-score-label" aria-valuenow="20" aria-valuetext="20" />
+          <output id="min-score-value" for="min-score" aria-live="polite">20</output>
+        </label>
+        <button id="refresh" type="button">Refresh now</button>
+      </section>
+
+      <section class="status" id="status" aria-live="polite"></section>
+      <ul id="stories" class="stories" aria-label="News stories"></ul>
+    </main>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
