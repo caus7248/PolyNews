@@ -102,9 +102,9 @@ const fetchStories = async () => {
       .filter((item) => item && item.type === "story" && item.title)
       .sort((a, b) => signalScore(b) - signalScore(a));
 
+    render();
     const stamp = new Date().toLocaleTimeString();
     setStatus(`Showing ${stories.length} stories · last refreshed ${stamp}`);
-    render();
   } catch (error) {
     if (stories.length) {
       setStatus("Unable to refresh live stories right now. Showing last successful results.");
