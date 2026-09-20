@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PolyNews — Signal vs. Noise Dashboard</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div>
+        <h1>Signal vs. Noise World Dashboard</h1>
+        <p class="subtitle">Feed the news, backed by relevant information, and pull the signal out of the noise.</p>
+      </div>
+      <div class="clock-card">
+        <span class="badge badge-live">LIVE</span>
+        <p id="live-clock" aria-live="polite">--:--:-- UTC</p>
+      </div>
+    </header>
+
+    <main class="dashboard-grid">
+      <section class="card" id="economics-policy">
+        <div class="card-header">
+          <h2>Economics &amp; Policy</h2>
+          <span class="badge">Macro</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Lens</th>
+                <th>Signal</th>
+                <th>Noise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Inflation</td>
+                <td>Sticky core trends and wage pressure data</td>
+                <td>Single-cycle commodity spikes</td>
+              </tr>
+              <tr>
+                <td>Rates</td>
+                <td>Forward guidance divergence across central banks</td>
+                <td>One-off policymaker soundbites</td>
+              </tr>
+              <tr>
+                <td>Trade</td>
+                <td>Durable corridor and sanctions realignment</td>
+                <td>Headline tariff rumor loops</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" id="government-signal-noise">
+        <div class="card-header">
+          <h2>Government signal vs noise</h2>
+          <span class="badge badge-contrast">Civics</span>
+        </div>
+        <ul class="signal-list">
+          <li><strong>Signal:</strong> Multi-year appropriations, procurement, and implementation timelines.</li>
+          <li><strong>Signal:</strong> Regulatory text changes with explicit compliance dates.</li>
+          <li><strong>Noise:</strong> Personality-driven social clips without policy instrument backing.</li>
+          <li><strong>Noise:</strong> Poll swings detached from turnout mechanics and district maps.</li>
+        </ul>
+      </section>
+
+      <section class="card" id="technology-science">
+        <div class="card-header">
+          <h2>Technology &amp; Science Forefront</h2>
+          <span class="badge">R&amp;D</span>
+        </div>
+        <ul class="signal-list">
+          <li>Breakthroughs that ship into reproducible products and peer-reviewed benchmarks.</li>
+          <li>Compute, energy, and materials bottlenecks that define real deployment velocity.</li>
+          <li>Cross-lab validation and open methods over conference hype cycles.</li>
+        </ul>
+      </section>
+
+      <section class="card" id="literature-hybrid">
+        <div class="card-header">
+          <h2>Literature &amp; Hybrid Diaspora Matrix</h2>
+          <span class="badge">Culture</span>
+        </div>
+        <p class="matrix-copy">
+          Track long-form narratives, translation pathways, and diaspora voices that bridge local memory with global circulation.
+          Prioritize durable themes and references that persist beyond short-lived media cycles.
+        </p>
+      </section>
+
+      <section class="card card-feed" id="media-bubble-breakers">
+        <div class="card-header">
+          <h2>Media Bubble Breakers live feed</h2>
+          <span id="feed-status" class="badge badge-live">Loading</span>
+        </div>
+        <div class="feed-grid">
+          <article>
+            <h3>The Economist</h3>
+            <ul id="economist-feed" class="feed-list"></ul>
+          </article>
+          <article>
+            <h3>Foreign Affairs</h3>
+            <ul id="foreign-affairs-feed" class="feed-list"></ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/app.js" defer></script>
+  </body>
+</html>
