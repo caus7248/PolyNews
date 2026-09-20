@@ -135,6 +135,7 @@ async function bootFeeds() {
 
   const loadFeed = async (key, targetId, source) => {
     const sourceStatus = key === "economist" ? economistStatus : foreignAffairsStatus;
+    const sourceList = document.getElementById(targetId);
     try {
       const items = await fetchFeed(source.url);
       renderFeed(targetId, items);
@@ -142,11 +143,17 @@ async function bootFeeds() {
       if (sourceStatus) {
         sourceStatus.textContent = `${source.title}: Live`;
       }
+      if (sourceList) {
+        sourceList.setAttribute("aria-label", `${source.title} live feed items`);
+      }
     } catch {
       renderFeed(targetId, source.fallback);
       feedState[key] = false;
       if (sourceStatus) {
         sourceStatus.textContent = `${source.title}: Static fallback`;
+      }
+      if (sourceList) {
+        sourceList.setAttribute("aria-label", `${source.title} static fallback items`);
       }
     } finally {
       updateFeedStatus();
@@ -177,4 +184,12 @@ bootFeeds().catch(() => {
   }
   renderFeed("economist-feed", FEEDS.economist.fallback);
   renderFeed("foreign-affairs-feed", FEEDS.foreignAffairs.fallback);
+  const economistList = document.getElementById("economist-feed");
+  const foreignAffairsList = document.getElementById("foreign-affairs-feed");
+  if (economistList) {
+    economistList.setAttribute("aria-label", "The Economist static fallback items");
+  }
+  if (foreignAffairsList) {
+    foreignAffairsList.setAttribute("aria-label", "Foreign Affairs static fallback items");
+  }
 });
